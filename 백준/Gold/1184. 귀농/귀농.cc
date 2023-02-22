@@ -12,24 +12,17 @@ int partial_sum[51][51];
 priority_queue<int> pq1;
 priority_queue<int> pq2;
 
-int get_partial_sum(int y1, int y2, int x1, int x2)
+// [y1, x1] ~ [y2, x2] 닫힌 구간의 직사각형 넓이 구하기
+inline int get_partial_sum(int y1, int y2, int x1, int x2)
 {
-    // [y1, x1] ~ [y2, x2] 닫힌 구간의 직사각형 넓이 구하기
-
-    int ret = 0;
-    for(int i=y1; i<=y2; i++)
-    {
-        if(x1 == 0)
-        {
-            ret += partial_sum[i][x2];
-        }
-        else
-        {
-            ret += partial_sum[i][x2] - partial_sum[i][x1-1];
-        }
-    }
-
-    return ret;
+    if(y1 != 0 && x1 != 0)
+        return partial_sum[y2][x2] - partial_sum[y2][x1-1] - partial_sum[y1-1][x2] + partial_sum[y1-1][x1-1];
+    else if(y1 != 0 && x1 == 0)
+        return partial_sum[y2][x2] - partial_sum[y1-1][x2];
+    else if(y1 == 0 && x1 != 0)
+        return partial_sum[y2][x2] - partial_sum[y2][x1-1];
+    else
+        return partial_sum[y2][x2];
 }
 
 void get_left_up(int y, int x)
@@ -103,12 +96,6 @@ void count()
     }
 }
 
-void clear()
-{
-    pq1 = priority_queue<int> ();
-    pq2 = priority_queue<int> ();
-}
-
 int main()
 {
     cin.tie(NULL); cout.tie(NULL); ios_base::sync_with_stdio(false);
@@ -125,6 +112,11 @@ int main()
             cin >> board[i][j];
             temp += board[i][j];
             partial_sum[i][j] = temp;
+
+            if(i >= 1)
+            {
+                partial_sum[i][j] += partial_sum[i-1][j];
+            }
         }
     }
 
@@ -136,13 +128,15 @@ int main()
             // 마지막 정사각형은 (N-1, N-1)
 
             // 왼쪽 위 & 오른쪽 아래 체크
-            clear();
+            pq1 = priority_queue<int> ();
+            pq2 = priority_queue<int> ();
             get_left_up(i-1, j-1);
             get_right_down(i, j);
             count();
 
             // 오른쪽 위 & 왼쪽 아래 체크
-            clear();
+            pq1 = priority_queue<int> ();
+            pq2 = priority_queue<int> ();
             get_right_up(i-1, j);
             get_left_down(i, j-1);
             count();
