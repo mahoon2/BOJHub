@@ -9,14 +9,14 @@
 using namespace std;
 typedef long long ll;
 
-ll n;
+int n;
 ll inp[MAX_N];
 ll tree[MAX_N] = {0, };
-vector<array<ll,2>> firstQuery; // i v
-vector<array<ll,4>> secondQuery; // k idx i j
-vector<pair<ll,ll>> out; // idx ret
+vector<array<int,2>> firstQuery; // i v
+vector<array<int,4>> secondQuery; // k idx i j
+vector<pair<int,ll>> out; // idx ret
 
-ll sum(ll i)
+ll sum(int i)
 {
     ll ret = 0;
 
@@ -28,7 +28,7 @@ ll sum(ll i)
     return ret;
 }
 
-void update(ll i, ll x)
+void update(int i, ll x)
 {
     while(i <= n)
     {
@@ -43,16 +43,16 @@ int main()
     /*ifstream fin;
     fin.open("1.inp");*/
     cin >> n;
-    for(ll i=1; i<=n; i++)
+    for(int i=1; i<=n; i++)
     {
         cin >> inp[i];
         update(i, inp[i]);
     }
 
-    ll m;
-    ll q;
-    ll a, b, c;
-    ll secondQueryCnt = 0;
+    int m;
+    int q;
+    int a, b, c;
+    int secondQueryCnt = 0;
     cin >> m;
     while(m--)
     {
@@ -72,7 +72,7 @@ int main()
     }
     sort(secondQuery.begin(), secondQuery.end());
 
-    ll last_k = -1;
+    int last_k = -1;
     for(auto[k, idx, i, j]: secondQuery)
     {
         if(last_k != k)
