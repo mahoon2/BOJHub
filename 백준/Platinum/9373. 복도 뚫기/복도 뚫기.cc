@@ -8,9 +8,8 @@
 
 using namespace std;
 
-int n;
-long long w;
-vector<array<long long,3>> sensor;
+int n, w;
+vector<array<int,3>> sensor;
 vector<pair<double,pair<int,int>>> sorted;
 int parent[MAX_N];
 
@@ -34,7 +33,7 @@ inline double dist(int a, int b)
     auto [ax, ay, ar] = sensor[a];
     auto [bx, by, br] = sensor[b];
 
-    return sqrt((bx-ax)*(bx-ax) + (by-ay)*(by-ay)) - (double)ar - (double)br;
+    return sqrt(((long long)(bx-ax))*(bx-ax) + ((long long)(by-ay))*(by-ay)) - (double)ar - (double)br;
 }
 
 double mst()
@@ -72,11 +71,11 @@ int main()
             continue;
         }
 
-        sensor = vector<array<long long,3>> (n);
+        sensor = vector<array<int,3>> (n);
         sorted.clear();
         for(int i=0; i<n+2; i++) parent[i] = i;
 
-        long long x, y, r;
+        int x, y, r;
         for(int i=0; i<n; i++)
         {
             cin >> x >> y >> r;
@@ -101,7 +100,7 @@ int main()
             {
                 ret = dist(i, j);
                 //cout << ret << '\n';
-                if(ret < 1e-8) ret = 0.0;
+                if(ret < 0) ret = 0.0;
                 sorted.push_back(make_pair(ret, make_pair(i,j)));
             }
         }
