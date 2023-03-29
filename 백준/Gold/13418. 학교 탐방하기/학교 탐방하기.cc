@@ -11,16 +11,15 @@ vector<pair<int,int>> adj[MAX_N];
 
 int find_maximum(int start)
 {
-    priority_queue<pair<int,int>> pq;
+    deque<pair<int,int>> dq;
     vector<bool> added(n+1, false);
     int ret = 0;
+    dq.push_front(make_pair(0,0));
 
-    pq.push(make_pair(0, 0));
-    while(!pq.empty())
+    while(!dq.empty())
     {
-        auto here = pq.top();
-        pq.pop();
-
+        auto here = dq.front();
+        dq.pop_front();
         int dist = here.first; int next = here.second;
         if(added[next]) continue;
         added[next] = true;
@@ -28,39 +27,37 @@ int find_maximum(int start)
 
         for(auto& there: adj[next])
         {
-            if(!added[there.second])
-            {
-                pq.push(make_pair(there.first, there.second));
-            }
+            if(added[there.second]) continue;
+            if(there.first == 0) dq.push_back(there);
+            else dq.push_front(there);
         }
     }
+    
 
     return ret;
 }
 
 int find_minimum(int start)
 {
-    priority_queue<pair<int,int>> pq;
+    deque<pair<int,int>> dq;
     vector<bool> added(n+1, false);
     int ret = 0;
+    dq.push_front(make_pair(0,0));
 
-    pq.push(make_pair(0, 0));
-    while(!pq.empty())
+    while(!dq.empty())
     {
-        auto here = pq.top();
-        pq.pop();
-
-        int dist = -here.first; int next = here.second;
+        auto here = dq.front();
+        dq.pop_front();
+        int dist = here.first; int next = here.second;
         if(added[next]) continue;
         added[next] = true;
         ret += dist;
 
         for(auto& there: adj[next])
         {
-            if(!added[there.second])
-            {
-                pq.push(make_pair(-there.first, there.second));
-            }
+            if(added[there.second]) continue;
+            if(there.first == 0) dq.push_front(there);
+            else dq.push_back(there);
         }
     }
 
