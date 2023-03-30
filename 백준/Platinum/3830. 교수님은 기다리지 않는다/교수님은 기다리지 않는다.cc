@@ -1,51 +1,31 @@
 #include <iostream>
 #include <vector>
-#include <queue>
 
+#define MAX_N 100002
 using namespace std;
 
 int n;
-vector<vector<pair<int,int>>> adj;
-vector<int> dist;
-vector<bool> visited;
-vector<int> parent;
+vector<long long> dist;
+int parent[MAX_N];
 
-int find_parent(int here)
+inline int find(int here)
 {
     if(parent[here] == here) return here;
-    else return parent[here] = find_parent(parent[here]);
+
+    int p = find(parent[here]);
+    dist[here] += dist[parent[here]];
+    return parent[here] = p;
 }
 
-void merge(int x, int y)
+inline void merge(int x, int y, long long w)
 {
-    int px = find_parent(x);
-    int py = find_parent(y);
+    // x가 부모, y가 자식이 된다.
+    int px = find(x);
+    int py = find(y);
 
     if(px == py) return;
     parent[py] = px;
-}
-
-void bfs(int start)
-{
-    queue<pair<int,int>> q;
-    q.push(make_pair(0, start));
-
-    while(!q.empty())
-    {
-        auto& temp = q.front();
-        int here_dist = temp.first; int here = temp.second;
-        q.pop();
-
-        if(visited[here]) continue;
-        visited[here] = true;
-        dist[here] = here_dist;
-
-        for(auto& p: adj[here])
-        {
-            int next_dist = p.first + here_dist; int next = p.second;
-            if(!visited[next]) q.push(make_pair(next_dist, next));
-        }
-    }
+    dist[py] = dist[x] - dist[y] + w;
 }
 
 int main()
@@ -58,10 +38,7 @@ int main()
         cin >> n >> m;
         if(n == 0 && m == 0) return 0;
 
-        adj = vector<vector<pair<int,int>>> (n+1);
-        dist = parent = vector<int> (n+1);
-        visited = vector<bool> (n+1, false);
-        queue<pair<bool,pair<int,int>>> is_query_possible;
+        dist = vector<long long>(n+1, 0);
         for(int i=1; i<=n; i++)
         {
             parent[i] = i;
@@ -75,38 +52,15 @@ int main()
             if(c == '!')
             {
                 cin >> a >> b >> w;
-                adj[a].push_back(make_pair(w, b));
-                adj[b].push_back(make_pair(-w, a));
-                merge(a, b);
+                merge(a, b, w);
             }
             else if(c == '?')
             {
                 cin >> a >> b;
-                if(find_parent(a) == find_parent(b))
-                    is_query_possible.push(make_pair(true, make_pair(a, b)));
+                if(find(a) == find(b))
+                    cout << dist[b] - dist[a] << '\n';
                 else
-                    is_query_possible.push(make_pair(false, make_pair(0, 0)));
-            }
-        }
-
-        for(int i=1; i<=n; i++)
-        {
-            if(!visited[i])
-            {
-                bfs(i);
-            }
-        }
-
-        while(!is_query_possible.empty())
-        {
-            auto t = is_query_possible.front();
-            is_query_possible.pop();
-
-            if(!t.first)
-                cout << "UNKNOWN\n";
-            else
-            {
-                cout << dist[t.second.second] - dist[t.second.first] << '\n';
+                    cout << "UNKNOWN\n";
             }
         }
     }
