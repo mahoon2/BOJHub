@@ -37,11 +37,11 @@ void update(int i, int num)
     }
 }
 
-bool comp(pii& a, pii& b)
+/*bool comp(pii& a, pii& b)
 {
     if(a.fi == b.fi) return a.se > b.se;
     return a.fi < b.fi;
-}
+}*/
 
 ll solve()
 {
@@ -62,15 +62,15 @@ ll solve()
     tempy.erase(unique(all(tempy)), tempy.end());
     for(auto& p: inp)
     {
-        p.se = lower_bound(all(tempy), p.se) - tempy.begin();
+        p.se = tempy.end() - lower_bound(all(tempy), p.se);
     }
 
-    sort(all(inp), comp);
+    sort(all(inp));
     ll ret = 0;
     for(auto& p: inp)
     {
-        ret += sum(n) - sum(p.se);
-        update(p.se+1, 1);
+        ret += sum(p.se);
+        update(p.se, 1);
     }
     return ret;
 }
