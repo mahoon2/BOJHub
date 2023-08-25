@@ -4,18 +4,9 @@ class Trie:
         self.child = [None for _ in range(26)]
         self.childNum = 0
         self.isEnd = False
-    
-    def trieEnd(self):
-        self.isEnd = True
 
 def ctoi(c):
     return ord(c)-ord('a')
-
-def printHead(head):
-    for next in head.child:
-        if next is not None:
-            print(next.char, next.childNum)
-            printHead(next)
 
 def main():
     while True:
@@ -32,9 +23,10 @@ def main():
             for d in data:
                 here = head
                 for i in range(len(d)):
-                    if here.child[ctoi(d[i])] is None:
-                        here.child[ctoi(d[i])] = Trie(d[i])
-                    here = here.child[ctoi(d[i])]
+                    idx = ctoi(d[i])
+                    if here.child[idx] is None:
+                        here.child[idx] = Trie(d[i])
+                    here = here.child[idx]
                     here.childNum += 1
                 
                 here.isEnd = True
@@ -48,14 +40,13 @@ def main():
                     if here.childNum != next.childNum and here != head:
                         temp += 1
                     here = next
-                # print(d, temp)
                 ret += temp
-            print('{:.2f}'.format(ret/n))
+            print('{:.2f}\n'.format(ret/n))
 
         except:
             break
 
-
 import sys
 input = sys.stdin.readline
+print = sys.stdout.write
 main()
