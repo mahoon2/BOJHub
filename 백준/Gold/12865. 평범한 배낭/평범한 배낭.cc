@@ -14,7 +14,6 @@ using ld = long double;
 using namespace std;
 
 int n, k;
-vector<pii> things;
 int dp[2][100001];
 
 int main()
@@ -26,32 +25,25 @@ int main()
 
     cin >> n >> k;
     int temp1, temp2;
-    things = vector<pii>(n);
-    for(auto& p: things)
-    {
-        cin >> p.fi >> p.se;
-    }
-    int weight, cost;
-    cost = things[0].second;
-    
-	for(int i=0; i<things[0].first; i++)
+    cin >> temp1 >> temp2;
+    for(int i=0; i<temp1; i++)
 		dp[0][i] = 0;
-	for(int i=things[0].first; i<=k; i++)
-		dp[0][i] = cost;
-    
+	for(int i=temp1; i<=k; i++)
+		dp[0][i] = temp2;
+
+    int here, prev;
     for(int i=1; i<n; i++)
     {
-        temp1 = i%2; temp2 = (i-1)%2;
-        weight = things[i].first;
-        cost = things[i].second;
+        cin >> temp1 >> temp2;
+        here = i%2; prev = (i-1)%2;
 
-        for(int j=0; j<weight; j++)
+        for(int j=0; j<temp1; j++)
         {
-            dp[temp1][j] = dp[temp2][j];
+            dp[here][j] = dp[prev][j];
         }
-        for(int j=weight; j<=k; j++)
+        for(int j=temp1; j<=k; j++)
         {
-            dp[temp1][j] = max(dp[temp2][j], dp[temp2][j-weight] + cost);
+            dp[here][j] = max(dp[prev][j], dp[prev][j-temp1] + temp2);
         }
     }
 
