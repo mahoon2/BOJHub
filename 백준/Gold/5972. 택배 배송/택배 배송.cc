@@ -24,7 +24,7 @@ vector<pii> adj[MAX_N];
 class BucketHeap{
     int size;
     int MOD;
-    vector<int> arr[100001];
+    vector<vector<int>> arr;
     vector<int> KeyIdx;
     vector<int> ValueIdx;
 
@@ -33,6 +33,7 @@ class BucketHeap{
     {
         size = 0;
         MOD = w+1;
+        arr = vector<vector<int>> (w+1, vector<int>());
         KeyIdx = vector<int> (w+1, -1);
         ValueIdx = vector<int> (v+1, -1);
     }
@@ -99,11 +100,8 @@ class BucketHeap{
     void pop_key(int key)
     {
         if(size <= 0) return;
-        if(key == 3932)
-        {
-            //cout << "debug\n";
-        }
         int last_key = arr[size-1][0];
+        
         swap(arr[KeyIdx[last_key % MOD]], arr[KeyIdx[key % MOD]]);
         swap(KeyIdx[last_key % MOD], KeyIdx[key % MOD]);
         arr[KeyIdx[key % MOD]].clear();
@@ -117,13 +115,11 @@ class BucketHeap{
     {
         int bucket = KeyIdx[oldKey % MOD];
         int temp_value = arr[bucket][sz(arr[bucket])-1];
+        
         swap(arr[bucket][sz(arr[bucket])-1], arr[bucket][ValueIdx[value]]);
         swap(ValueIdx[temp_value], ValueIdx[value]);
         arr[bucket].erase(--arr[bucket].end());
-        if(oldKey == 3932)
-        {
-            //cout << "debug\n";
-        }
+
         if(sz(arr[bucket]) <= 1) pop_key(oldKey);
         push(newKey, value);
     }
@@ -132,9 +128,11 @@ class BucketHeap{
     {
         auto iter = arr[0].end();
         iter--;
+        
         int ret = *iter;
         arr[0].erase(iter);
         ValueIdx[ret] = -1;
+        
         if(sz(arr[0]) <= 1)
         {
             pop_key(arr[0][0]);
@@ -170,10 +168,6 @@ int dijkstra(int start, int finish)
             if(dist[there] > dist[here] + cost)
             {
                 int newKey = dist[here] + cost;
-                if(newKey > 1000)
-                {
-                    //cout << here << '\n';
-                }
                 if(dist[there] != INF)
                 {
                     bh.modify(dist[there], newKey, there);
