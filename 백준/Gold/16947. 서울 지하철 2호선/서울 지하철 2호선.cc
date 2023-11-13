@@ -39,12 +39,8 @@ int cycleCheck(int prev, int here)
         else if((ret = cycleCheck(here, there)) != -1)
         {
             dist[here] = 0;
-            if(ret == here)
-            {
-                return -1;
-            }
-            else
-                return ret;
+            if(ret == here) return -1;
+            else return ret;
         }
     }
 
@@ -53,15 +49,11 @@ int cycleCheck(int prev, int here)
 
 int dfs(int prev, int here)
 {
-    if(dist[here] == 0) return 0;
+    if(dist[here] != INF) return dist[here];
 
     for(int there: adj[here])
     {
         if(there == prev) continue;
-        if(dist[there] == 0)
-        {
-            return dist[here] = 1;
-        }
         dist[here] = min(dist[here], dfs(here, there) + 1);
     }
 
